@@ -18,7 +18,8 @@ class Employee extends Model
         return $this->belongsTo(Division::class);
     }
 
-    public function users() {
-        return $this->HasMany(User::class);
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

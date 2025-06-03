@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\{Company, Branch, Division, Employee};
+use App\Models\{Company, Branch, Division, Employee, User};
 
 return new class extends Migration
 {
@@ -14,11 +14,11 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(User::class);
             $table->foreignIdFor(Company::class)->nullable();
             $table->foreignIdFor(Branch::class)->nullable();
             $table->foreignIdFor(Division::class)->nullable();
             $table->foreignIdFor(Employee::class)->nullable();
-            $table->string('name');
             $table->string('phone');
             $table->timestamps();
         });

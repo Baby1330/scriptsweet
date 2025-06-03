@@ -18,7 +18,12 @@ class Client extends Model
         return $this->belongsTo(Division::class);
     }
 
-    public function employee() {
+    public function employee()
+    {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }
