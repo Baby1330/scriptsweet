@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Branch::class)->nullable();
             $table->foreignIdFor(Division::class)->nullable();
             $table->foreignIdFor(Employee::class)->nullable();
+            $table->string('address')->nullable();
             $table->string('phone');
             $table->timestamps();
         });

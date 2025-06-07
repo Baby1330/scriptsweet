@@ -2,9 +2,9 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\ClientResource\Pages;
-use App\Filament\Admin\Resources\ClientResource\RelationManagers;
-use App\Models\Client;
+use App\Filament\Admin\Resources\ProductResource\Pages;
+use App\Filament\Admin\Resources\ProductResource\RelationManagers;
+use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ClientResource extends Resource
+class ProductResource extends Resource
 {
-    protected static ?string $model = Client::class;
+    protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -34,25 +34,15 @@ class ClientResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('company_id')
-                    ->relationship('company', 'name')
-                    ->default(null),
-                Forms\Components\Select::make('branch_id')
-                    ->relationship('branch', 'name')
-                    ->default(null),
-                Forms\Components\Select::make('division_id')
-                    ->relationship('division', 'name')
-                    ->default(null),
-                Forms\Components\Select::make('employee_id')
-                    ->relationship('employee.user', 'name')
-                    ->default(null),
-                Forms\Components\Select::make('user_id')
-                    ->required()
-                    ->relationship('user', 'name'),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
+                Forms\Components\FileUpload::make('image')
+                    ->image(),
+                Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('price')
+                    ->required()
+                    ->numeric()
+                    ->prefix('IDR'),
             ]);
     }
 
@@ -60,20 +50,12 @@ class ClientResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('branch.name')
-                    ->label('Branch')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('division.name')
-                    ->label('Division')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('employee.user.name')
-                    ->label('Sales')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('Contact Person')
+                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->money('IDR')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -106,9 +88,9 @@ class ClientResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListClients::route('/'),
-            'create' => Pages\CreateClient::route('/create'),
-            'edit' => Pages\EditClient::route('/{record}/edit'),
+            'index' => Pages\ListProducts::route('/'),
+            'create' => Pages\CreateProduct::route('/create'),
+            'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
 }

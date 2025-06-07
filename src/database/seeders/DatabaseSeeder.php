@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\{User, Company, Branch, Bank, Division, Employee, Client};
+use App\Models\{User, Company, Branch, Bank, Division, Employee, Client, Product, Order};
 use Spatie\Permission\Models\Role;
 use Illuminate\Database\Seeder;
 
@@ -68,7 +68,13 @@ class DatabaseSeeder extends Seeder
 
 
         // Company
-        $company = Company::firstOrCreate(['name' => 'PT LAPI Laboratories', 'logo' => '']);
+        $company = Company::firstOrCreate([
+            'name' => 'PT LAPI Laboratories', 
+            'address' => 'Jl. Gedong Panjang No.32',
+            'email' => 'ptlapi@admin.com',
+            'contact'=> '',
+            'logo' => ''
+        ]);
 
         $bank = Bank::firstOrCreate(['company_id' => 1, 'name' => 'BCA', 'rekening' => '123456']);
 
@@ -77,6 +83,18 @@ class DatabaseSeeder extends Seeder
             'company_id' => 1,
             'name' => 'Cabang',
             'location' => 'Jakarta'
+        ]);
+
+        $branch = Branch::firstOrCreate([
+            'company_id' => 2,
+            'name' => 'Cabang',
+            'location' => 'Bogor'
+        ]);
+
+        $branch = Branch::firstOrCreate([
+            'company_id' => 3,
+            'name' => 'Cabang',
+            'location' => 'Tangerang'
         ]);
 
         // Divisions
@@ -117,6 +135,7 @@ class DatabaseSeeder extends Seeder
             'branch_id' => 1,
             'division_id' => 1,
             'employee_id' => 1,
+            'address' => '',
             'phone' => '081234567890',
         ]);
 
@@ -126,7 +145,45 @@ class DatabaseSeeder extends Seeder
             'branch_id' => 1,
             'division_id' => 1,
             'employee_id' => 1,
+            'address' => '',
             'phone' => '081234567890',
+        ]);
+
+        // Product
+        $product = Product::firstOrCreate([
+            'image' => '',
+            'name' => 'ALERHIS',
+            'price' => 100000
+        ]);
+
+        $product = Product::firstOrCreate([
+            'image' => '',
+            'name' => 'EYEVIT GUMMY',
+            'price' => 70000
+        ]);
+
+        $product = Product::firstOrCreate([
+            'image' => '',
+            'name' => 'EYEVIT SIRUP',
+            'price' => 55000
+        ]);
+
+        $product = Product::firstOrCreate([
+            'image' => '',
+            'name' => 'FULAZ',
+            'price' => 70000
+        ]);
+
+        // Order
+
+        $order = Order::firstOrCreate([
+            'status' => 'SO',
+            'order_code' => 'SO-123',
+            'product_id' => 1,
+            'employee_id' => 1,
+            'client_id' => 1,
+            'qty'=> 1,
+            'grand_total' => 135000
         ]);
     }
 }

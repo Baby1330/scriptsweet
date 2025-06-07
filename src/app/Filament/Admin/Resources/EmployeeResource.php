@@ -60,9 +60,6 @@ class EmployeeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('company.name')
-                    ->label('Company')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('branch.name')
                     ->label('Branch')
                     ->sortable(),
