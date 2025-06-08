@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\{User, Company, Branch, Bank, Division, Employee, Client, Product, Order};
+use App\Models\{User, Company, Branch, Bank, Division, Employee, Client, Product, Period, Order, Target};
 use Spatie\Permission\Models\Role;
 use Illuminate\Database\Seeder;
+use Carbon\CarbonPeriod;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,7 +23,6 @@ class DatabaseSeeder extends Seeder
 
         // $user->assignRole('super_admin');
 
-       
             Role::firstOrCreate(['name' => 'super_admin']);
             Role::firstOrCreate(['name' => 'sales']);
             Role::firstOrCreate(['name' => 'finance']);
@@ -113,6 +113,7 @@ class DatabaseSeeder extends Seeder
         // Employees
 
         $salesEmployee = Employee::create([
+            'name' => 'Asep',
             'user_id' => 2,
             'company_id' => 1,
             'branch_id' => 1,
@@ -120,7 +121,26 @@ class DatabaseSeeder extends Seeder
             'phone' => '08123456789'
         ]);
 
+        $salesEmployee = Employee::create([
+            'name' => 'Jimmy',
+            'user_id' => 2,
+            'company_id' => 1,
+            'branch_id' => 2,
+            'division_id' => 1,
+            'phone' => '08123456789'
+        ]);
+
+        $salesEmployee = Employee::create([
+            'name' => 'Marvel',
+            'user_id' => 2,
+            'company_id' => 1,
+            'branch_id' => 3,
+            'division_id' => 1,
+            'phone' => '08123456789'
+        ]);
+
         $financeEmployee = Employee::create([
+            'name' => 'Ilsa',
             'user_id' => 3,
             'company_id' => 1,
             'branch_id' => 1,
@@ -130,6 +150,7 @@ class DatabaseSeeder extends Seeder
 
          // Clients
          $clientA = Client::firstOrCreate([
+            'name' => 'Apotek Harapan Indah',
             'user_id' => 4,
             'company_id' => 1,
             'branch_id' => 1,
@@ -140,6 +161,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $clientB = Client::firstOrCreate([
+            'name' => 'Apotek Jantung Siloam',
             'user_id' => 5,
             'company_id' => 1,
             'branch_id' => 1,
@@ -153,25 +175,29 @@ class DatabaseSeeder extends Seeder
         $product = Product::firstOrCreate([
             'image' => '',
             'name' => 'ALERHIS',
-            'price' => 100000
+            'price' => 100000,
+            'stock' => 10
         ]);
 
         $product = Product::firstOrCreate([
             'image' => '',
             'name' => 'EYEVIT GUMMY',
-            'price' => 70000
+            'price' => 70000,
+            'stock' => 10
         ]);
 
         $product = Product::firstOrCreate([
             'image' => '',
             'name' => 'EYEVIT SIRUP',
-            'price' => 55000
+            'price' => 55000,
+            'stock' => 10
         ]);
 
         $product = Product::firstOrCreate([
             'image' => '',
             'name' => 'FULAZ',
-            'price' => 70000
+            'price' => 70000,
+            'stock' => 10
         ]);
 
         // Order
@@ -185,5 +211,43 @@ class DatabaseSeeder extends Seeder
             'qty'=> 1,
             'grand_total' => 135000
         ]);
+
+        // Period
+        $period = CarbonPeriod::create('2025-01-01', '1 month', '2025-12-01');
+
+        foreach ($period as $date) {
+            Period::firstOrCreate([
+               'year' => $date->year,
+                'month' => $date->month,
+            ], [
+                'name' => $date->format('F Y'),
+            ]);
+        }
+
+        // Target
+        $company = Company::all();
+        $period = Period::all();
+        $branch = Branch::all();
+        $product = Product::all();
+
+        if ($company->isEmpty() || $period->isEmpty() || $branch->isEmpty() || $product->isEmpty()) {
+            $this->command->info('Please make sure Company, Period, Branch and Product tables have data.');
+            return;
+        }
+
+        for ($i = 0; $i < 12; $i++) {
+            $randomProduct = $product->random();
+            $targetQty = rand(10, 100);
+            $totalPrice = $targetQty * $randomProduct->price;
+        
+            Target::firstOrCreate([
+                'company_id' => $company->random()->id,
+                'period_id' => $period->random()->id,
+                'branch_id' => $branch->random()->id,
+                'product_id' => $randomProduct->id,
+                'targetprod' => $targetQty,
+                'total' => $totalPrice,
+            ]);
+        }
     }
 }

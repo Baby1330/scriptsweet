@@ -12,12 +12,13 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Get;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
     protected static ?string $navigationGroup = 'Sales Management';
 
@@ -71,21 +72,47 @@ class OrderResource extends Resource
                 ->default('')
                 ->visible(fn ($get) => filled($get('status'))),
 
-            Forms\Components\Select::make('product_id')
-                ->required()
-                ->relationship('product', 'name'),
-
             Forms\Components\Select::make('employee_id')
-                ->required()
-                ->relationship('employee.user', 'name'),
-
+                ->required()    
+                ->relationship('employee', 'name', function ($query) {
+                    $query->where('division_id', 1);
+                }),
             Forms\Components\Select::make('client_id')
                 ->required()
-                ->relationship('client.user', 'name'),
+                ->options(function (callable $get) {
+                    $empID = $get('employee_id');
+                    if (!$empID) {
+                        return [];
+                    }
+            
+                    $employee = \App\Models\Employee::find($empID);
+                    if (!$employee) {
+                        return [];
+                    }
+            
+                    $branch = $employee->branch_id;
+            
+                    return \App\Models\Client::where('branch_id', $branch)
+                        ->pluck('name', 'id')
+                        ->toArray();
+                })
+                ->searchable(),
 
+            Forms\Components\Select::make('product_id')
+                ->required()
+                ->relationship('product', 'name')
+                ->reactive(),
+                
             Forms\Components\TextInput::make('qty')
                 ->required()
-                ->numeric(),
+                ->numeric()
+                ->minValue(1)
+                ->maxValue(10)
+                ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                    $product = \App\Models\Product::find($get('product_id'));
+                    $price = $product?->price ?? 0;
+                    $set('grand_total', $price * (int) $state);
+            }),
 
             Forms\Components\TextInput::make('grand_total')
                 ->required()
@@ -103,10 +130,10 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('product.name')
                     ->label('Product')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('employee.user.name')
+                Tables\Columns\TextColumn::make('employee.name')
                     ->label('Sales')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('client.user.name')
+                Tables\Columns\TextColumn::make('client.name')
                     ->label('Client')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('qty')
@@ -139,9 +166,9 @@ class OrderResource extends Resource
                 ->visible(fn (Order $record) => $record->status === 'PO'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

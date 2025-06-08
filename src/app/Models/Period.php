@@ -5,9 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Product extends Model
+class Period extends Model
 {
-    protected $fillable = ['image', 'name', 'price', 'stock'];
+    protected $fillable = ['year', 'month', 'name'];
+
+    public function getFormattedAttribute()
+    {
+        return $this->name;
+    }
 
     public function target()
     {

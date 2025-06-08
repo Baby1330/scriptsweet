@@ -17,7 +17,7 @@ class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
     protected static ?string $navigationGroup = 'Employee Management';
 
@@ -34,19 +34,18 @@ class EmployeeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->label('Full Name')
-                    ->relationship('user', 'name'),
-                Forms\Components\Select::make('company_id')
-                    ->relationship('company', 'name')
-                    ->label('Company')
-                    ->default(null),
+                Forms\Components\TextInput::make('name')
+                    ->label('Name'),
+                Forms\Components\TextInput::make('user_id')
+                    ->label('Full Name'),
+                Forms\Components\Hidden::make('company_id')
+                    ->default(1),
                 Forms\Components\Select::make('division_id')
                     ->relationship('division', 'name')
                     ->label('Division')
                     ->default(null),
                 Forms\Components\Select::make('branch_id')
-                    ->relationship('branch', 'name')
+                    ->relationship('branch', 'location')
                     ->label('Cabang')
                     ->default(null),
                 Forms\Components\TextInput::make('phone')
@@ -60,11 +59,11 @@ class EmployeeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('branch.name')
+                Tables\Columns\TextColumn::make('branch.location')
                     ->label('Branch')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('Full Name')
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('division.name')
                     ->label('Division')

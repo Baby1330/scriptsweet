@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\{Company, Branch, Division, Employee, User};
+use App\Models\{Company, Period, Branch, Product};
 
 return new class extends Migration
 {
@@ -12,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('targets', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignIdFor(User::class);
             $table->foreignIdFor(Company::class)->nullable();
-            $table->foreignIdFor(Division::class)->nullable();
+            $table->foreignIdFor(Period::class)->nullable();
             $table->foreignIdFor(Branch::class)->nullable();
-            $table->string('phone');
+            $table->foreignIdFor(Product::class)->nullable();
+            $table->decimal('targetprod', 15, 2)->default(0);
+            $table->decimal('total', 15, 2)->default(0);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('targets');
     }
 };

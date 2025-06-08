@@ -17,7 +17,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
     protected static ?string $navigationGroup = 'Sales Management';
 
@@ -43,6 +43,10 @@ class ProductResource extends Resource
                     ->required()
                     ->numeric()
                     ->prefix('IDR'),
+                Forms\Components\TextInput::make('stock')
+                    ->required()
+                    ->minValue(1)
+                    ->numeric(),
             ]);
     }
 
@@ -56,6 +60,8 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->money('IDR')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('stock')
+                    ->sortable(),       
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

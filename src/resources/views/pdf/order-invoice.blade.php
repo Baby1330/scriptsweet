@@ -108,7 +108,7 @@
     <div class="header-flex">
         <div class="company-info">
             <h2>PT LAPI LABORATORIES</h2>
-            <p>Jalan Gedong Panjang 32<br>
+            <p>Jalan Gedong Panjang No.32<br>
             ptlapilaboratories@gmail.com<br>
             (+62 21 6902626)</p>
         </div>

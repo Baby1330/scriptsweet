@@ -17,7 +17,7 @@ class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
     protected static ?string $navigationGroup = 'Sales Management';
 
@@ -38,7 +38,7 @@ class ClientResource extends Resource
                     ->relationship('company', 'name')
                     ->default(null),
                 Forms\Components\Select::make('branch_id')
-                    ->relationship('branch', 'name')
+                    ->relationship('branch', 'location')
                     ->default(null),
                 Forms\Components\Select::make('division_id')
                     ->relationship('division', 'name')
@@ -60,7 +60,7 @@ class ClientResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('branch.name')
+                Tables\Columns\TextColumn::make('branch.location')
                     ->label('Branch')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('division.name')
