@@ -36,7 +36,7 @@ class TargetResource extends Resource
                     ->default(null),
                 Forms\Components\Select::make('product_id')
                     ->label('Product')
-                    ->relationship('product', 'name') // atau nama lain yang ditampilkan
+                    ->relationship('product', 'name') 
                     ->required()
                     ->reactive(),
                 Forms\Components\TextInput::make('targetprod')

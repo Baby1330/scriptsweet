@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'branch_id',
+        'company_id',
+        'division_id',
+        'phone',
+    ];
+    
     public function company() {
         return $this->belongsTo(Company::class);
     }

@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\ClientResource\Pages;
 use App\Filament\Admin\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
+use App\Models\Employee;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -36,21 +37,42 @@ class ClientResource extends Resource
             ->schema([
                 Forms\Components\Select::make('company_id')
                     ->relationship('company', 'name')
-                    ->default(null),
+                    ->default(1)
+                    ->hidden(),
+                Forms\Components\Select::make('user_id')
+                    ->label('Client Name')
+                    ->relationship('user', 'name', function ($query) {
+                        $query->whereHas('client', function ($subQuery) {
+                            $subQuery->where('division_id', '1');
+                        });
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 Forms\Components\Select::make('branch_id')
                     ->relationship('branch', 'location')
                     ->default(null),
                 Forms\Components\Select::make('division_id')
                     ->relationship('division', 'name')
-                    ->default(null),
+                    ->default(1)
+                    ->disabled()
+                    ->label('Division'),
                 Forms\Components\Select::make('employee_id')
-                    ->relationship('employee.user', 'name')
-                    ->default(null),
-                Forms\Components\Select::make('user_id')
-                    ->required()
-                    ->relationship('user', 'name'),
+                    ->label('Employee')
+                    ->relationship('employee', 'name', function ($query, $get) {
+                        $query->where('division_id', 1);
+                
+                        if ($get('branch_id')) {
+                            $query->where('branch_id', $get('branch_id'));
+                        }
+                    })
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->user->name ?? '-')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 Forms\Components\TextInput::make('phone')
                     ->tel()
+                    ->prefix('+62')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -66,12 +88,12 @@ class ClientResource extends Resource
                 Tables\Columns\TextColumn::make('division.name')
                     ->label('Division')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('employee.user.name')
-                    ->label('Sales')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Contact Person')
-                    ->searchable(),
+                    ->label('Client')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('employee.user.name')
+                    ->label('Employee')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')

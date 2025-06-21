@@ -23,11 +23,12 @@ class DatabaseSeeder extends Seeder
 
         // $user->assignRole('super_admin');
 
-            Role::firstOrCreate(['name' => 'super_admin']);
-            Role::firstOrCreate(['name' => 'sales']);
-            Role::firstOrCreate(['name' => 'finance']);
-            Role::firstOrCreate(['name' => 'client']);
-
+        Role::firstOrCreate(['name' => 'super_admin']);
+        Role::firstOrCreate(['name' => 'sales']);
+        Role::firstOrCreate(['name' => 'finance']);
+        Role::firstOrCreate(['name' => 'client']);
+        Role::firstOrCreate(['name' => 'purchase']);
+        
         $roles = Role::pluck('id', 'name');
 
         $adminUser = User::firstOrCreate([
@@ -38,45 +39,50 @@ class DatabaseSeeder extends Seeder
         $adminUser->assignRole('super_admin');
 
         $salesUser = User::firstOrCreate([
-            'name' => 'Ini Sales',
+            'name' => 'User Sales',
             'email' => 'sales@admin.com',
             'password' => bcrypt('password'),
         ]);
         $salesUser->assignRole('sales');
 
         $financeUser = User::firstOrCreate([
-            'name' => 'Ini Finance',
+            'name' => 'User Finance',
             'email' => 'finance@admin.com',
             'password' => bcrypt('password'),
         ]);
         $financeUser->assignRole('finance');
 
         $clientUser = User::firstOrCreate([
-            'name' => 'Ini Client A',
+            'name' => 'Client A',
             'email' => 'client@admin.com',
             'password' => bcrypt('password'),
         ]);
         $clientUser->assignRole('client');
 
         $clientUser = User::firstOrCreate([
-            'name' => 'Ini Client B',
+            'name' => 'Client B',
             'email' => 'client1@admin.com',
             'password' => bcrypt('password'),
         ]);
         $clientUser->assignRole('client');
 
-
+        $purchaseUser = User::firstOrCreate([
+            'name' => 'User Purchase',
+            'email' => 'purchase@admin.com',
+            'password' => bcrypt('password'),
+        ]);
+        $purchaseUser->assignRole('purchase');
 
         // Company
         $company = Company::firstOrCreate([
             'name' => 'PT LAPI Laboratories', 
             'address' => 'Jl. Gedong Panjang No.32',
             'email' => 'ptlapi@admin.com',
-            'contact'=> '',
+            'contact'=> '0216902626',
             'logo' => ''
         ]);
 
-        $bank = Bank::firstOrCreate(['company_id' => 1, 'name' => 'BCA', 'rekening' => '123456']);
+        $bank = Bank::firstOrCreate(['company_id' => 1, 'name' => 'BCA', 'rekening' => '2770556514']);
 
         // Branch
         $branch = Branch::firstOrCreate([
@@ -86,13 +92,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $branch = Branch::firstOrCreate([
-            'company_id' => 2,
+            'company_id' => 1,
             'name' => 'Cabang',
             'location' => 'Bogor'
         ]);
 
         $branch = Branch::firstOrCreate([
-            'company_id' => 3,
+            'company_id' => 1,
             'name' => 'Cabang',
             'location' => 'Tangerang'
         ]);
@@ -110,10 +116,15 @@ class DatabaseSeeder extends Seeder
             'name' => 'Finance'
         ]);
 
+        $purchaseDivision = Division::firstOrCreate([
+            'company_id' => 1,
+            'branch_id' => 1,
+            'name' => 'Purchase'
+        ]);
+
         // Employees
 
         $salesEmployee = Employee::create([
-            'name' => 'Asep',
             'user_id' => 2,
             'company_id' => 1,
             'branch_id' => 1,
@@ -121,26 +132,7 @@ class DatabaseSeeder extends Seeder
             'phone' => '08123456789'
         ]);
 
-        $salesEmployee = Employee::create([
-            'name' => 'Jimmy',
-            'user_id' => 2,
-            'company_id' => 1,
-            'branch_id' => 2,
-            'division_id' => 1,
-            'phone' => '08123456789'
-        ]);
-
-        $salesEmployee = Employee::create([
-            'name' => 'Marvel',
-            'user_id' => 2,
-            'company_id' => 1,
-            'branch_id' => 3,
-            'division_id' => 1,
-            'phone' => '08123456789'
-        ]);
-
         $financeEmployee = Employee::create([
-            'name' => 'Ilsa',
             'user_id' => 3,
             'company_id' => 1,
             'branch_id' => 1,
@@ -150,7 +142,6 @@ class DatabaseSeeder extends Seeder
 
          // Clients
          $clientA = Client::firstOrCreate([
-            'name' => 'Apotek Harapan Indah',
             'user_id' => 4,
             'company_id' => 1,
             'branch_id' => 1,
@@ -161,7 +152,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $clientB = Client::firstOrCreate([
-            'name' => 'Apotek Jantung Siloam',
             'user_id' => 5,
             'company_id' => 1,
             'branch_id' => 1,

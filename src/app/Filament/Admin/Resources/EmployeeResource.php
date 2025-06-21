@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class EmployeeResource extends Resource
 {
@@ -33,26 +36,25 @@ class EmployeeResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Name'),
-                Forms\Components\TextInput::make('user_id')
-                    ->label('Full Name'),
-                Forms\Components\Hidden::make('company_id')
-                    ->default(1),
-                Forms\Components\Select::make('division_id')
-                    ->relationship('division', 'name')
-                    ->label('Division')
-                    ->default(null),
-                Forms\Components\Select::make('branch_id')
-                    ->relationship('branch', 'location')
-                    ->label('Cabang')
-                    ->default(null),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        ->schema([              
+            Forms\Components\Select::make('user_id')
+                ->required()
+                ->relationship('user', 'name'),
+            Forms\Components\TextInput::make('phone')
+                ->label('Nomor Telepon')
+                ->tel()
+                ->required()
+                ->maxLength(15)
+                ->prefix('+62')
+                ->placeholder('81234567890'),
+            Forms\Components\Select::make('division_id')
+            ->relationship('division', 'name')
+            ->label('Division'),
+            Forms\Components\Select::make('branch_id')
+            ->relationship('branch', 'location')
+            ->label('Cabang'),
+            Forms\Components\Hidden::make('company_id')->default(1),
+       ]);
     }
 
     public static function table(Table $table): Table
@@ -62,7 +64,7 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('branch.location')
                     ->label('Branch')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('user.name')
                     ->label('Name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('division.name')

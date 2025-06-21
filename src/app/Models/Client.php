@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'employee_id',
+        'phone',
+        'branch_id',
+        'division_id',
+        // tambahkan field lain yang ingin kamu izinkan
+    ];
+    
     public function company() {
         return $this->belongsTo(Company::class);
     }

@@ -39,9 +39,7 @@ class OrderPolicy
      */
     public function update(User $user, Order $order): bool
     {
-        return $order->status !== 'CO'
-        && $order->status !== 'PO'
-        && $user->can('update_order');
+        return $user->can('update_order');
     }
 
     /**

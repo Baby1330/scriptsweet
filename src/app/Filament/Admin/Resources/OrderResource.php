@@ -74,9 +74,12 @@ class OrderResource extends Resource
 
             Forms\Components\Select::make('employee_id')
                 ->required()    
-                ->relationship('employee', 'name', function ($query) {
-                    $query->where('division_id', 1);
-                }),
+                ->relationship(
+                    name: 'employee', // hanya satu tingkat relasi
+                    titleAttribute: 'id', // boleh diisi sembarang, nanti di-override
+                    modifyQueryUsing: fn ($query) => $query->where('division_id', 1),
+                )
+                ->getOptionLabelFromRecordUsing(fn ($record) => $record->user->name),
             Forms\Components\Select::make('client_id')
                 ->required()
                 ->options(function (callable $get) {
@@ -109,7 +112,7 @@ class OrderResource extends Resource
                 ->minValue(1)
                 ->maxValue(10)
                 ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                    $product = \App\Models\Product::find($get('product_id'));
+                    $product = Product::find($get('product_id'));
                     $price = $product?->price ?? 0;
                     $set('grand_total', $price * (int) $state);
             }),
@@ -130,10 +133,10 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('product.name')
                     ->label('Product')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('employee.name')
+                Tables\Columns\TextColumn::make('employee.user.name')
                     ->label('Sales')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('client.name')
+                Tables\Columns\TextColumn::make('client.user.name')
                     ->label('Client')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('qty')

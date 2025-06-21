@@ -14,7 +14,6 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Company::class)->nullable();
             $table->foreignIdFor(Branch::class)->nullable();
